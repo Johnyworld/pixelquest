@@ -1,4 +1,3 @@
-import { start } from "repl";
 import * as socketio from "socket.io";
 
 let io = socketio(7000);
@@ -25,11 +24,12 @@ class Vec2 implements Vec2Interface {
 }
 
 class Entity {
-  ctx: CanvasRenderingContext2D;
+  id: string;
   pos: Vec2Interface;
   vel: Vec2Interface;
   size: SizeInterface;
-  constructor(x:number, y:number) {
+  constructor(id:string, x:number, y:number) {
+    this.id = id;
     this.pos = new Vec2(x, y);
     this.vel = new Vec2(1, 0);
     this.size = {
@@ -60,10 +60,16 @@ const startGameInterval = () => {
 io.on("connection", client => {
   
   const handleNewConnect = () => {
-    state.players.push( new Entity(30, 30) );
-    console.log('newConnect!');
+    const newPlayer = new Entity(client.id, 30, 30);
+    state.players.push(newPlayer);
+    client.emit('initPlayer', newPlayer);
     startGameInterval();
   }
 
+  const handleDisconnect = () => {
+    state.players = state.players.filter(player => player.id !== client.id);
+  }
+
   client.on('newConnect', handleNewConnect);
+  client.on('disconnect', handleDisconnect)
 });

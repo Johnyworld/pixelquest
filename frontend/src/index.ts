@@ -14,40 +14,11 @@ interface SizeInterface {
   height: number;
 }
 
-class Vec2 implements Vec2Interface {
-  x: number;
-  y: number;
-  constructor(x:number, y:number) {
-    this.x = x;
-    this.y = y;
-  }
-}
-
-class Entity {
-  ctx: CanvasRenderingContext2D;
+interface Entity {
+  id: number;
   pos: Vec2Interface;
   vel: Vec2Interface;
-  size: SizeInterface;
-  constructor(ctx:CanvasRenderingContext2D, x:number, y:number) {
-    this.ctx = ctx;
-    this.pos = new Vec2(x, y);
-    this.vel = new Vec2(1, 0);
-    this.size = {
-      width: 32,
-      height: 32,
-    }
-  }
-
-  draw(ctx:CanvasRenderingContext2D) {
-    ctx.fillStyle = 'red';
-    ctx.fillRect(this.pos.x, this.pos.y, this.size.width, this.size.height);
-  }
-
-  update(ctx: CanvasRenderingContext2D) {
-    this.pos.x += this.vel.x;
-    this.pos.y += this.vel.y;
-    this.draw(ctx);
-  }
+  size: SizeInterface
 }
 
 const canvas = <HTMLCanvasElement> document.getElementById('canvas');
@@ -55,7 +26,7 @@ canvas.width = SCREEN_WIDTH;
 canvas.height = SCREEN_HEIGHT;
 const ctx = canvas.getContext('2d')!;
 
-// const player = new Entity(ctx, 50, 50);
+let currentPlayer = {} as Entity;
 
 // window.addEventListener('keydown', (e:any) => {
 //   e.preventDefault();
@@ -73,17 +44,15 @@ const ctx = canvas.getContext('2d')!;
 //   }
 // })
 
-// const update = () => {
-//   ctx.fillStyle = '#e5e5e5';
-//   ctx.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-//   player.update(ctx);
-// }
-
 const newConnect = () => {
   socket.emit('newConnect');
 }
 
-const handleGameState = (data:any) => {
+const handleInitPlayer = (data: Entity) => {
+  currentPlayer = data;
+}
+
+const handleUpdate = (data:any) => {
   ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
   for ( const player of data.players ) {
     ctx.fillStyle = 'red';
@@ -91,6 +60,6 @@ const handleGameState = (data:any) => {
   }
 }
 
-socket.on('gameState', handleGameState);
+socket.on('gameState', handleUpdate);
+socket.on('initPlayer', handleInitPlayer);
 newConnect();
-
