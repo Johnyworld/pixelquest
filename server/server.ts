@@ -31,7 +31,7 @@ class Entity {
   constructor(id:string, x:number, y:number) {
     this.id = id;
     this.pos = new Vec2(x, y);
-    this.vel = new Vec2(1, 0);
+    this.vel = new Vec2(0, 0);
     this.size = {
       width: 32,
       height: 32,
@@ -47,9 +47,9 @@ const state = {
   players: []
 }
 
-
+let gameInterval;
 const startGameInterval = () => {
-  const gameInterval = setInterval(() => {
+  gameInterval = setInterval(() => {
     for ( const player of state.players ) {
       player.update();
     }
@@ -60,7 +60,8 @@ const startGameInterval = () => {
 io.on("connection", client => {
   
   const handleNewConnect = () => {
-    const newPlayer = new Entity(client.id, 30, 30);
+    clearInterval(gameInterval);
+    const newPlayer = new Entity(client.id, Math.random() * 300 + 30, Math.random() * 300 + 30);
     state.players.push(newPlayer);
     client.emit('initPlayer', newPlayer);
     startGameInterval();
@@ -70,6 +71,18 @@ io.on("connection", client => {
     state.players = state.players.filter(player => player.id !== client.id);
   }
 
+  const handleKeyDown = ( code ) => {
+    const currentPlayer = state.players.find(player => player.id === client.id);
+    switch( code ) {
+      case 'KeyA': currentPlayer.vel = { x: -1, y: 0 }; return;
+      case 'KeyS': currentPlayer.vel = { x: 0, y: 1 }; return;
+      case 'KeyD': currentPlayer.vel = { x: 1, y: 0 }; return;
+      case 'KeyW': currentPlayer.vel = { x: 0, y: -1 }; return;
+      case 'Space': currentPlayer.vel = { x: 0, y: 0 }; return;
+    }
+  }
+
   client.on('newConnect', handleNewConnect);
-  client.on('disconnect', handleDisconnect)
+  client.on('disconnect', handleDisconnect);
+  client.on('keydown', handleKeyDown);
 });

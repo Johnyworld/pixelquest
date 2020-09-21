@@ -28,21 +28,13 @@ const ctx = canvas.getContext('2d')!;
 
 let currentPlayer = {} as Entity;
 
-// window.addEventListener('keydown', (e:any) => {
-//   e.preventDefault();
-//   console.log(e.code);
-//   if ( e.code === 'KeyA' ) {
-//     player.vel = { x: -1, y: 0 };
-//   } else if ( e.code === 'KeyS' ) {
-//     player.vel = { x: 0, y: 1 };
-//   } else if ( e.code === 'KeyD' ) {
-//     player.vel = { x: 1, y: 0 };
-//   } else if ( e.code === 'KeyW' ) {
-//     player.vel = { x: 0, y: -1 };
-//   } else if ( e.code === 'Space' ) {
-//     player.vel = { x: 0, y: 0 };
-//   }
-// })
+window.addEventListener('keydown', (e:any) => {
+  if ( ['KeyA', 'KeyS', 'KeyD', 'KeyW', 'Space'].includes(e.code) ) {
+    e.preventDefault();
+    console.log(e.code);
+    socket.emit('keydown', e.code);
+  }
+})
 
 const newConnect = () => {
   socket.emit('newConnect');
