@@ -8,6 +8,11 @@ interface Vec2Interface {
   y: number;
 }
 
+interface SizeInterface {
+  width: number;
+  height: number;
+}
+
 class Vec2 implements Vec2Interface {
   x: number;
   y: number;
@@ -20,16 +25,27 @@ class Vec2 implements Vec2Interface {
 class Entity {
   ctx: CanvasRenderingContext2D;
   pos: Vec2Interface;
-  size: Vec2Interface;
+  vel: Vec2Interface;
+  size: SizeInterface;
   constructor(ctx:CanvasRenderingContext2D, x:number, y:number) {
     this.ctx = ctx;
     this.pos = new Vec2(x, y);
-    this.size = new Vec2(16, 16);
+    this.vel = new Vec2(1, 0);
+    this.size = {
+      width: 32,
+      height: 32,
+    }
   }
 
   draw(ctx:CanvasRenderingContext2D) {
     ctx.fillStyle = 'red';
-    ctx.fillRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
+    ctx.fillRect(this.pos.x, this.pos.y, this.size.width, this.size.height);
+  }
+
+  update(ctx: CanvasRenderingContext2D) {
+    this.pos.x += this.vel.x;
+    this.pos.y += this.vel.y;
+    this.draw(ctx);
   }
 }
 
@@ -44,5 +60,12 @@ const player = new Entity(ctx, 50, 50);
 
 ctx.fillStyle = '#e5e5e5';
 ctx.fillRect(0, 0, 640, 640);
-player.draw(ctx);
+
+const update = () => {
+  ctx.clearRect(0, 0, 640, 640);
+  player.update(ctx);
+  requestAnimationFrame(update);
+}
+
+update();
 
