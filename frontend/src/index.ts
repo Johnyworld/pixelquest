@@ -28,12 +28,14 @@ const ctx = canvas.getContext('2d')!;
 
 let currentPlayer = {} as Entity;
 
-window.addEventListener('keydown', (e:any) => {
-  if ( ['KeyA', 'KeyS', 'KeyD', 'KeyW', 'Space'].includes(e.code) ) {
-    e.preventDefault();
-    console.log(e.code);
-    socket.emit('keydown', e.code);
-  }
+['keydown', 'keyup'].forEach(eventName => {
+  window.addEventListener(eventName, (e:any) => {
+    if ( ['KeyA', 'KeyS', 'KeyD', 'KeyW', 'Space'].includes(e.code) ) {
+      e.preventDefault();
+      console.log(e.code);
+      socket.emit('keyevent', { eventName, code: e.code });
+    }
+  })
 })
 
 const newConnect = () => {

@@ -71,18 +71,21 @@ io.on("connection", client => {
     state.players = state.players.filter(player => player.id !== client.id);
   }
 
-  const handleKeyDown = ( code ) => {
+  const handleKeyEvent = ({ eventName, code }) => {
     const currentPlayer = state.players.find(player => player.id === client.id);
-    switch( code ) {
-      case 'KeyA': currentPlayer.vel = { x: -1, y: 0 }; return;
-      case 'KeyS': currentPlayer.vel = { x: 0, y: 1 }; return;
-      case 'KeyD': currentPlayer.vel = { x: 1, y: 0 }; return;
-      case 'KeyW': currentPlayer.vel = { x: 0, y: -1 }; return;
-      case 'Space': currentPlayer.vel = { x: 0, y: 0 }; return;
+    if ( eventName === 'keydown' ) {
+      switch( code ) {
+        case 'KeyA': currentPlayer.vel = { x: -1, y: 0 }; return;
+        case 'KeyS': currentPlayer.vel = { x: 0, y: 1 }; return;
+        case 'KeyD': currentPlayer.vel = { x: 1, y: 0 }; return;
+        case 'KeyW': currentPlayer.vel = { x: 0, y: -1 }; return;
+      }
+    } else {
+      currentPlayer.vel = { x: 0, y: 0 };
     }
   }
 
   client.on('newConnect', handleNewConnect);
   client.on('disconnect', handleDisconnect);
-  client.on('keydown', handleKeyDown);
+  client.on('keyevent', handleKeyEvent);
 });
