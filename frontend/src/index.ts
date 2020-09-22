@@ -38,6 +38,12 @@ let currentPlayer = {} as Entity;
   })
 })
 
+const image = new Image();
+image.onload = () => {
+    console.log(image);
+}
+image.src = '/src/images/background.jpg';
+
 const newConnect = () => {
   socket.emit('newConnect');
 }
@@ -48,6 +54,7 @@ const handleInitPlayer = (data: Entity) => {
 
 const handleUpdate = (data:any) => {
   ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+  ctx.drawImage(image, 0, 0, 16, 16, 0, 0, 16, 16);
   for ( const player of data.players ) {
     ctx.fillStyle = 'red';
     ctx.fillRect(player.pos.x, player.pos.y, player.size.width, player.size.height);
