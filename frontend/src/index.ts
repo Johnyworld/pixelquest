@@ -1,3 +1,5 @@
+import { loadImage } from './loaders.js';
+
 declare const io: typeof import('socket.io');
 const socket = io('http://localhost:7000');
 
@@ -38,29 +40,31 @@ let currentPlayer = {} as Entity;
   })
 })
 
-const image = new Image();
-image.onload = () => {
-    console.log(image);
-}
-image.src = '/src/images/background.jpg';
 
 const newConnect = () => {
   socket.emit('newConnect');
 }
 
-const handleInitPlayer = (data: Entity) => {
-  currentPlayer = data;
-}
 
-const handleUpdate = (data:any) => {
-  ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-  ctx.drawImage(image, 0, 0, 16, 16, 0, 0, 16, 16);
-  for ( const player of data.players ) {
-    ctx.fillStyle = 'red';
-    ctx.fillRect(player.pos.x, player.pos.y, player.size.width, player.size.height);
+Promise.all([
+  loadImage('/src/images/background.jpg')
+]).then(([ image ]) => {
+
+  const handleInitPlayer = (data: Entity) => {
+    currentPlayer = data;
   }
-}
+  
+  const handleUpdate = (data:any) => {
+    ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    ctx.drawImage(image, 0, 0, 16, 16, 0, 0, 16, 16);
+    for ( const player of data.players ) {
+      ctx.fillStyle = 'red';
+      ctx.fillRect(player.pos.x, player.pos.y, player.size.width, player.size.height);
+    }
+  }
+  
+  socket.on('gameState', handleUpdate);
+  socket.on('initPlayer', handleInitPlayer);
 
-socket.on('gameState', handleUpdate);
-socket.on('initPlayer', handleInitPlayer);
-newConnect();
+  newConnect();
+}) 
