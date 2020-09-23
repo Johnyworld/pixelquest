@@ -30,19 +30,20 @@ canvas.height = SCREEN_HEIGHT;
 const ctx = canvas.getContext('2d')!;
 
 let currentPlayer = {} as Entity;
+let level = 'tranquilForest';
 
 ['keydown', 'keyup'].forEach(eventName => {
   window.addEventListener(eventName, (e:any) => {
     if ( ['KeyA', 'KeyS', 'KeyD', 'KeyW', 'Space'].includes(e.code) ) {
       e.preventDefault();
       console.log(e.code);
-      socket.emit('keyevent', { eventName, code: e.code });
+      socket.emit('keyevent', { eventName, code: e.code, level });
     }
   })
 })
 
 const newConnect = () => {
-  socket.emit('newConnect');
+  socket.emit('newConnect', level);
 }
 
 Promise.all([
@@ -72,10 +73,9 @@ Promise.all([
       }
     }
 
-
-    for ( const player of data.players ) {
+    for ( const entity of data.entities ) {
       ctx.fillStyle = 'red';
-      ctx.fillRect(player.pos.x, player.pos.y, player.size.width, player.size.height);
+      ctx.fillRect(entity.pos.x, entity.pos.y, entity.size.width, entity.size.height);
     }
   }
   

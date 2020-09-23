@@ -1,57 +1,36 @@
 import * as socketio from "socket.io";
-import Entity from "./Entity";
+import { loadLevels } from "./loaders";
+import { handleDisconnect, handleNewConnect } from "./src/socketHandlers/connecting";
+import { handleKeyEvent } from './src/socketHandlers/inputs';
+import State from "./State";
 
 let io = socketio(7000);
 
 const FRAME_RATE = 120;
 
-const levels = [
+export const levels = [
   'tranquilForest'
 ];
 
-const state = {
-  players: []
-} as { players:any[] }
+Promise.all([
+  loadLevels(levels)
+]).then(([ levelSpecs ]) => {
 
-let gameInterval:NodeJS.Timeout;
-const startGameInterval = () => {
-  gameInterval = setInterval(() => {
-    for ( const player of state.players ) {
-      player.update();
-    }
-    io.emit('gameState', state);
-  }, 1000 / FRAME_RATE)
-}
+  const state = new State(levelSpecs as {[index: string]: any});
 
-io.on("connection", client => {
-  
-  const handleNewConnect = () => {
-    clearInterval(gameInterval);
-    const newPlayer = new Entity(client.id, Math.random() * 300 + 30, Math.random() * 300 + 30);
-    state.players.push(newPlayer);
-    client.emit('initPlayer', newPlayer);
-    startGameInterval();
-  }
-
-  const handleDisconnect = () => {
-    state.players = state.players.filter(player => player.id !== client.id);
-  }
-
-  const handleKeyEvent = ({ eventName, code }:any) => {
-    const currentPlayer = state.players.find(player => player.id === client.id);
-    if ( eventName === 'keydown' ) {
-      switch( code ) {
-        case 'KeyA': currentPlayer.vel = { x: -1, y: 0 }; return;
-        case 'KeyS': currentPlayer.vel = { x: 0, y: 1 }; return;
-        case 'KeyD': currentPlayer.vel = { x: 1, y: 0 }; return;
-        case 'KeyW': currentPlayer.vel = { x: 0, y: -1 }; return;
+  let gameInterval:NodeJS.Timeout;
+  const startGameInterval = (level:string) => {
+    gameInterval = setInterval(() => {
+      for ( const entity of state[level].entities ) {
+        entity.update();
       }
-    } else {
-      currentPlayer.vel = { x: 0, y: 0 };
-    }
+      io.in(level).emit('gameState', state[level]);
+    }, 1000 / FRAME_RATE)
   }
-
-  client.on('newConnect', handleNewConnect);
-  client.on('disconnect', handleDisconnect);
-  client.on('keyevent', handleKeyEvent);
-});
+  
+  io.on("connection", client => {
+    client.on('newConnect', (level) => handleNewConnect({ client, state, level, gameInterval, startGameInterval }));
+    client.on('disconnect', () => handleDisconnect({ client, state, levels }));
+    client.on('keyevent', ({ eventName, code, level }) => handleKeyEvent({ client, state, eventName, code, level }));
+  });
+})
