@@ -1,53 +1,19 @@
 import * as socketio from "socket.io";
+import Entity from "./Entity";
 
 let io = socketio(7000);
 
 const FRAME_RATE = 120;
 
-interface Vec2Interface {
-  x: number;
-  y: number;
-}
-
-interface SizeInterface {
-  width: number;
-  height: number;
-}
-
-class Vec2 implements Vec2Interface {
-  x: number;
-  y: number;
-  constructor(x:number, y:number) {
-    this.x = x;
-    this.y = y;
-  }
-}
-
-class Entity {
-  id: string;
-  pos: Vec2Interface;
-  vel: Vec2Interface;
-  size: SizeInterface;
-  constructor(id:string, x:number, y:number) {
-    this.id = id;
-    this.pos = new Vec2(x, y);
-    this.vel = new Vec2(0, 0);
-    this.size = {
-      width: 32,
-      height: 32,
-    }
-  }
-  update() {
-    this.pos.x += this.vel.x;
-    this.pos.y += this.vel.y;
-  }
-}
+const levels = [
+  'tranquilForest'
+];
 
 const state = {
   players: []
-}
+} as { players:any[] }
 
-let gameInterval;
+let gameInterval:NodeJS.Timeout;
 const startGameInterval = () => {
   gameInterval = setInterval(() => {
     for ( const player of state.players ) {
@@ -71,7 +37,7 @@ io.on("connection", client => {
     state.players = state.players.filter(player => player.id !== client.id);
   }
 
-  const handleKeyEvent = ({ eventName, code }) => {
+  const handleKeyEvent = ({ eventName, code }:any) => {
     const currentPlayer = state.players.find(player => player.id === client.id);
     if ( eventName === 'keydown' ) {
       switch( code ) {
