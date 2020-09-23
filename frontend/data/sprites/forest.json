@@ -1,0 +1,13 @@
+{
+  "imageUrl": "/src/images/background.jpg",
+  "tiles": [
+    {
+      "name": "ground",
+      "index": [0, 0]
+    },
+    {
+      "name": "dirt",
+      "index": [0, 1]
+    }
+  ]
+}

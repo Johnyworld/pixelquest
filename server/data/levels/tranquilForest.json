@@ -1,0 +1,14 @@
+{
+  "preset": "forest",
+  "tiles": [
+    {
+      "tile": "ground",
+      "ranges": [
+        [
+          0, 20,
+          0, 10
+        ]
+      ]
+    }
+  ]
+}
