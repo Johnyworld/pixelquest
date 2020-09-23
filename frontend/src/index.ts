@@ -1,4 +1,5 @@
 import { loadImage } from './loaders.js';
+import SpriteSheet from './SpriteSheet.js';
 
 declare const io: typeof import('socket.io');
 const socket = io('http://localhost:7000');
@@ -40,11 +41,9 @@ let currentPlayer = {} as Entity;
   })
 })
 
-
 const newConnect = () => {
   socket.emit('newConnect');
 }
-
 
 Promise.all([
   loadImage('/src/images/background.jpg')
@@ -53,10 +52,19 @@ Promise.all([
   const handleInitPlayer = (data: Entity) => {
     currentPlayer = data;
   }
-  
+
+  const backgrounds = new SpriteSheet(image, 16, 16);
+  backgrounds.defineTile('ground', 0, 0);
+
   const handleUpdate = (data:any) => {
     ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    ctx.drawImage(image, 0, 0, 16, 16, 0, 0, 16, 16);
+
+    for ( let i=0; i<20; i++ ) {
+      for ( let j=0; j<20; j++ ) {
+        backgrounds.draw(ctx, 'ground', 16*i, 16*j);
+      }
+    }
+
     for ( const player of data.players ) {
       ctx.fillStyle = 'red';
       ctx.fillRect(player.pos.x, player.pos.y, player.size.width, player.size.height);
