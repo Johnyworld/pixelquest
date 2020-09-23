@@ -55,15 +55,23 @@ Promise.all([
 
   const backgrounds = new SpriteSheet(image, 16, 16);
   backgrounds.defineTile('ground', 0, 0);
+  backgrounds.defineTile('dirt', 1, 0);
 
   const handleUpdate = (data:any) => {
     ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    for ( let i=0; i<20; i++ ) {
-      for ( let j=0; j<20; j++ ) {
-        backgrounds.draw(ctx, 'ground', 16*i, 16*j);
+    for ( let x=0; x<20; x++ ) {
+      for ( let y=0; y<14; y++ ) {
+        backgrounds.draw(ctx, 'ground', 16*x, 16*y);
       }
     }
+
+    for ( let x=0; x<20; x++ ) {
+      for ( let y=14; y<16; y++ ) {
+        backgrounds.draw(ctx, 'dirt', 16*x, 16*y);
+      }
+    }
+
 
     for ( const player of data.players ) {
       ctx.fillStyle = 'red';
