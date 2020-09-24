@@ -49,16 +49,19 @@ const newConnect = () => {
 }
 
 Promise.all([
-  loadImage('/src/images/background.jpg')
-]).then(([ image ]) => {
+  loadImage('/src/images/background.jpg'),
+  loadImage('/src/images/entitysprite.png')
+]).then(([ backgroundSprite, entitySprite ]) => {
 
-  const backgrounds = new SpriteSheet(image, 16, 16);
+  const backgrounds = new SpriteSheet(backgroundSprite, 16, 16);
   backgrounds.defineTile('ground', 0, 0);
   backgrounds.defineTile('dirt', 1, 0);
 
-  const handleUpdate = (data:any) => {
+  const entities = new SpriteSheet(entitySprite, 16, 24);
+  entities.defineTile('female', 0, 0);
+  entities.defineTile('male', 0, 4);
 
-    console.log(data);
+  const handleUpdate = (data:any) => {
 
     ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -71,10 +74,11 @@ Promise.all([
         }
       });
     })
+    
+    data.entities.sort((a:any, b:any)=> a.pos.y > b.pos.y ? 1 : -1);
 
     for ( const entity of data.entities ) {
-      ctx.fillStyle = 'red';
-      ctx.fillRect(entity.pos.x, entity.pos.y, entity.size.width, entity.size.height);
+      entities.draw(ctx, entity.sex, entity.pos.x, entity.pos.y)
     }
   }
   

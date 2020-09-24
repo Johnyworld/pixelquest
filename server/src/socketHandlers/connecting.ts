@@ -23,8 +23,8 @@ export const handleNewConnect = ({ client, state, level, customize, gameInterval
   clearInterval(gameInterval);
   const newPlayer = new Entity({
     id: client.id, 
-    x: Math.random() * 300 + 30, 
-    y: Math.random() * 300 + 30,
+    x: Math.floor(Math.random() * 100) + 30, 
+    y: Math.floor(Math.random() * 100) + 30,
     customize,
   });
   state[level].entities.push(newPlayer);

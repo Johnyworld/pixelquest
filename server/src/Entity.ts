@@ -22,8 +22,8 @@ export default class Entity {
     this.pos = new Vec2(x, y);
     this.vel = new Vec2(0, 0);
     this.size = {
-      width: 32,
-      height: 32,
+      width: 16,
+      height: 24,
     }
     this.sex = customize.sex;
   }
