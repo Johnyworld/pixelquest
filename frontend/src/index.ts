@@ -59,19 +59,18 @@ Promise.all([
   backgrounds.defineTile('dirt', 1, 0);
 
   const handleUpdate = (data:any) => {
+
     ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    for ( let x=0; x<20; x++ ) {
-      for ( let y=0; y<14; y++ ) {
-        backgrounds.draw(ctx, 'ground', 16*x, 16*y);
-      }
-    }
-
-    for ( let x=0; x<20; x++ ) {
-      for ( let y=14; y<16; y++ ) {
-        backgrounds.draw(ctx, 'dirt', 16*x, 16*y);
-      }
-    }
+    data.tiles.forEach((tile:any)=> {
+      tile.ranges.forEach((range:any) => {
+        for ( let x=range[0]; x<range[1]; x++ ) {
+          for ( let y=range[2]; y<range[3]; y++ ) {
+            backgrounds.draw(ctx, tile.tile, 16*x, 16*y);
+          }
+        }
+      });
+    })
 
     for ( const entity of data.entities ) {
       ctx.fillStyle = 'red';
