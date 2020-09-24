@@ -13,7 +13,6 @@ interface HandleNewConnect {
 interface HandleDisconnect {
   client: Socket;
   state: State;
-  levels: string[];
 }
 
 
@@ -28,8 +27,8 @@ export const handleNewConnect = ({ client, state, level, gameInterval, startGame
 }
 
 
-export const handleDisconnect = ({ client, state, levels }: HandleDisconnect) => {
-  for ( const levelName of levels ) {
+export const handleDisconnect = ({ client, state }: HandleDisconnect) => {
+  for ( const levelName in state ) {
     state[levelName].entities = state[levelName].entities.filter((entity: Entity) => entity.id !== client.id);
   }
 }
