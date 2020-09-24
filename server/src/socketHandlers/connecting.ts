@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
-import Entity from "../../Entity";
-import State from "../../State";
+import Entity from "../Entity";
+import { State } from "../types";
 
 interface HandleNewConnect {
   client: Socket;
