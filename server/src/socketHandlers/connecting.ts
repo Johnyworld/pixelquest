@@ -22,7 +22,6 @@ export const handleNewConnect = ({ client, state, level, gameInterval, startGame
   const newPlayer = new Entity(client.id, Math.random() * 300 + 30, Math.random() * 300 + 30);
   state[level].entities.push(newPlayer);
   client.join(level);
-  client.emit('initPlayer', newPlayer);
   startGameInterval(level);
 }
 

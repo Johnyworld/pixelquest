@@ -29,7 +29,6 @@ canvas.width = SCREEN_WIDTH;
 canvas.height = SCREEN_HEIGHT;
 const ctx = canvas.getContext('2d')!;
 
-let currentPlayer = {} as Entity;
 let level = 'tranquilForest';
 
 ['keydown', 'keyup'].forEach(eventName => {
@@ -49,10 +48,6 @@ const newConnect = () => {
 Promise.all([
   loadImage('/src/images/background.jpg')
 ]).then(([ image ]) => {
-
-  const handleInitPlayer = (data: Entity) => {
-    currentPlayer = data;
-  }
 
   const backgrounds = new SpriteSheet(image, 16, 16);
   backgrounds.defineTile('ground', 0, 0);
@@ -79,7 +74,6 @@ Promise.all([
   }
   
   socket.on('gameState', handleUpdate);
-  socket.on('initPlayer', handleInitPlayer);
 
   newConnect();
 }) 
