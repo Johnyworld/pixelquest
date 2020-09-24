@@ -22,7 +22,7 @@ const startGameInterval = (level:string) => {
 }
 
 io.on("connection", client => {
-  client.on('newConnect', (level) => handleNewConnect({ client, state, level, gameInterval, startGameInterval }));
+  client.on('newConnect', ({ level, customize }) => handleNewConnect({ client, state, level, customize, gameInterval, startGameInterval }));
   client.on('disconnect', () => handleDisconnect({ client, state }));
   client.on('keyevent', ({ eventName, code, level }) => handleKeyEvent({ client, state, eventName, code, level }));
 });

@@ -42,7 +42,10 @@ let level = 'tranquilForest';
 })
 
 const newConnect = () => {
-  socket.emit('newConnect', level);
+  const customize = {
+    sex: ['male', 'female'][Math.floor(Math.random() * 2)],
+  }
+  socket.emit('newConnect', { level, customize });
 }
 
 Promise.all([
@@ -54,6 +57,8 @@ Promise.all([
   backgrounds.defineTile('dirt', 1, 0);
 
   const handleUpdate = (data:any) => {
+
+    console.log(data);
 
     ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
