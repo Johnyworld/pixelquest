@@ -4,8 +4,8 @@ import SpriteSheet from './SpriteSheet.js';
 declare const io: typeof import('socket.io');
 const socket = io('http://localhost:7000');
 
-const SCREEN_WIDTH = 640;
-const SCREEN_HEIGHT = 480;
+const SCREEN_WIDTH = 360;
+const SCREEN_HEIGHT = 240;
 
 interface Vec2Interface {
   x: number;
