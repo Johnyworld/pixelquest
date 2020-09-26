@@ -7,6 +7,15 @@ const socket = io('http://localhost:7000');
 const SCREEN_WIDTH = 360;
 const SCREEN_HEIGHT = 240;
 
+const mouse = {
+  x: 0, y: 0
+}
+
+window.addEventListener('mousemove', (e:MouseEvent) => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+})
+
 interface Vec2Interface {
   x: number;
   y: number;
@@ -74,7 +83,7 @@ Promise.all([
         }
       });
     })
-    
+
     data.entities.sort((a:any, b:any)=> a.pos.y > b.pos.y ? 1 : -1);
 
     for ( const entity of data.entities ) {
