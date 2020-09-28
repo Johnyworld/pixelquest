@@ -89,15 +89,15 @@ Promise.all([
     data.entities.sort((a:any, b:any)=> a.pos.y > b.pos.y ? 1 : -1);
 
     for ( const entity of data.entities ) {
-      entities.draw(ctx, entity.sex, entity.pos.x, entity.pos.y)
+      entities.draw(ctx, entity.sex, entity.pos.x, entity.pos.y);
+      console.log(entity.distance % 3);
       const a = mouse.x - entity.pos.x;
       const b = mouse.y - entity.pos.y;
       const range = Math.floor(Math.sqrt( a*a + b*b ));
       const cosA = a / range;
       const degree = cosA * 90;
 
-      console.log(a, b, range, degree);
-      // console.log(entity.pos, mouse, range, cosA );
+      // console.log(a, b, range, degree);
     }
   }
   
