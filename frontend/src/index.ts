@@ -84,8 +84,6 @@ Promise.all([
       });
     })
 
-
-
     data.entities.sort((a:any, b:any)=> a.pos.y > b.pos.y ? 1 : -1);
 
     for ( const entity of data.entities ) {
